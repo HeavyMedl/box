@@ -1,2 +1,2 @@
 # box
-tcl script that connects to WAS boxes
+tcl script that connects to specified WAS boxes
