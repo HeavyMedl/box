@@ -22,7 +22,7 @@ set user "<usr>";
 set jumpbox "<ip>";
 set appserver $arg_1;
 set jumpboxPw "<pw>";
-set appserverPw "<pw>"
+set appserverPw "<pw>";
 ###########################################
 # Other constants
 ###########################################
@@ -267,6 +267,17 @@ array set uat2w {
 proc connect {pw} {
 	expect {
 		"assword:" {
+			send "$pw\r"
+			expect {
+				"denied" { 
+					puts "Wrong password"
+					exit 1 
+				}
+				"#" { return 0 }
+				">" { return 0 }
+			}
+		}
+		"assphrase" {
 			send "$pw\r"
 			expect {
 				"denied" { 
