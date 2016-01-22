@@ -22,7 +22,7 @@ set user "<usr>";
 set jumpbox "<ip>";
 set appserver $arg_1;
 set jumpboxPw "<pw>";
-set appserverPw "<pw>";
+set appserverPw "<pw>"
 ###########################################
 # Other constants
 ###########################################
@@ -469,7 +469,7 @@ switch $arg_0 {
 						send "mkdir ~/$jLocalDir\r";
 						
 						send "scp -r $user@$box:$logDir* $jLocalDir\r";
-						set connected [connect $appserverPw]
+						# set connected [connect $appserverPw]
 						if { [connect $appserverPw] == 0 } {
 							send "exit\r"
 							expect "osed"
