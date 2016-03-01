@@ -470,7 +470,7 @@ switch $arg_0 {
 						send "mkdir ~/$jLocalDir\r";
 						
 						send "scp -r $appserverUser@$box:$logDir* $jLocalDir\r";
-						# set connected [connect $appserverPw]
+						set connected [connect $appserverPw]
 						if { [connect $appserverPw] == 0 } {
 							send "exit\r"
 							expect "osed"
