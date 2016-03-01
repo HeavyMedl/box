@@ -18,11 +18,12 @@ array set options {
 ###########################################
 # Credential information
 ###########################################
-set user "<usr>";
-set jumpbox "<ip>";
+set jumpboxUser "";
+set appserverUser "";
+set jumpbox "";
 set appserver $arg_1;
-set jumpboxPw "<pw>";
-set appserverPw "<pw>"
+set jumpboxPw "";
+set appserverPw ""
 ###########################################
 # Other constants
 ###########################################
@@ -426,7 +427,7 @@ switch $arg_0 {
 
 			}
 			# First jump to the AIX jumpbox
-			spawn ssh $user@$jumpbox
+			spawn ssh $jumpboxUser@$jumpbox
 
 			# If we successfully connect to the jumpbox, connect 
 			# to the app server to perform operation
@@ -453,7 +454,7 @@ switch $arg_0 {
 				}
 				switch $operation {
 					tail {
-						send "ssh $user@$box\r"
+						send "ssh $appserverUser@$box\r"
 						if { [connect $appserverPw] == 0 } {
 							puts "Attempting to tail $log in $logDir"
 							send "cd $logDir\r"
@@ -468,14 +469,14 @@ switch $arg_0 {
 						set jLocalDir "logs.box.$box.$timestamp";
 						send "mkdir ~/$jLocalDir\r";
 						
-						send "scp -r $user@$box:$logDir* $jLocalDir\r";
+						send "scp -r $appserverUser@$box:$logDir* $jLocalDir\r";
 						# set connected [connect $appserverPw]
 						if { [connect $appserverPw] == 0 } {
 							send "exit\r"
 							expect "osed"
-							spawn scp -r $user@$jumpbox:$jLocalDir/* $jLocalDir
+							spawn scp -r $jumpboxUser@$jumpbox:$jLocalDir/* $jLocalDir
 							connect $jumpboxPw
-							spawn ssh $user@$jumpbox "rm -fr $jLocalDir"
+							spawn ssh $jumpboxUser@$jumpbox "rm -fr $jLocalDir"
 							connect $jumpboxPw
 						} else {
 							errorConnection $box
@@ -484,7 +485,7 @@ switch $arg_0 {
 						exit 0
 					}
 					default {
-						send "ssh $user@$box\r"
+						send "ssh $appserverUser@$box\r"
 						if { [connect $appserverPw] == 0 } {
 							send "bash\r"
 							interact
@@ -503,8 +504,3 @@ switch $arg_0 {
 	}
 }
 exit 1
-
-# sum :: Int -> Int
-# sum 
-# 	| n == 0  	= n
-# 	| otherwise = sum (n-1)
