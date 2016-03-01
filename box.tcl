@@ -267,7 +267,7 @@ array set uat2w {
 ###########################################
 proc connect {pw} {
 	expect {
-		"assword:" {
+		"ass" {
 			send "$pw\r"
 			expect {
 				"denied" { 
@@ -278,12 +278,19 @@ proc connect {pw} {
 				">" { return 0 }
 			}
 		}
-		"assphrase" {
-			send "$pw\r"
+		"yes/no)?" {
+			send "yes\r"
 			expect {
-				"denied" { 
-					puts "Wrong password"
-					exit 1 
+				"ass" {
+					send "$pw\r"
+					expect {
+						"denied" { 
+							puts "Wrong password"
+							exit 1 
+						}
+						"#" { return 0 }
+						">" { return 0 }
+					}
 				}
 				"#" { return 0 }
 				">" { return 0 }
@@ -470,7 +477,7 @@ switch $arg_0 {
 						send "mkdir ~/$jLocalDir\r";
 						
 						send "scp -r $appserverUser@$box:$logDir* $jLocalDir\r";
-						set connected [connect $appserverPw]
+						connect $appserverPw
 						if { [connect $appserverPw] == 0 } {
 							send "exit\r"
 							expect "osed"
